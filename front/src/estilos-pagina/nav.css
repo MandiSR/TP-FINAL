@@ -1,0 +1,15 @@
+.Link {
+    display: inline-block;
+    padding: 15px 60px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color:#2e4595;
+    border-radius: 4px;
+    margin: 5px
+}
+
+.Link:hover {
+    background-color: #fdc00d;
+    color: black; 
+}
