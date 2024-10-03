@@ -20,7 +20,7 @@ function Formulario({ onSubmit }) {
     useEffect(() => {
         const fetchProveedores = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}/proveedor`);
+                const response = await axios.get(`${API_BASE_URL}/proveedor/proveedor`);
                 setProveedores(response.data);
                 console.log(response.data); // Verifica los datos aquí
             } catch (error) {
@@ -31,7 +31,7 @@ function Formulario({ onSubmit }) {
 
         const fetchProductos = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}/producto`);
+                const response = await axios.get(`${API_BASE_URL}/producto/el-producto`);
                 setProductos(response.data);
             } catch (error) {
                 console.error('Error fetching productos:', error);

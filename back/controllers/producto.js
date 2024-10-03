@@ -6,77 +6,44 @@ function getAllProductos(req, res) {
     connection.query(query, (err, result) => {
         if (err) {
             console.error(err);
-            res.status(500).send("Error retrieving products from database");
-        } else {
-            console.error(err);
             return res.status(500).send("Error retrieving products from database");
         }
+        res.json(result); // Enviar el resultado si no hay error
     });
 }
-
-// function createProducto(req, res) {
-//     const { nombre, nombreComercial, seleccion, precioVenta, proveedor, precioCompra } = req.body;
-//     const fotoProducto = req.file ? `../uploads/${req.file.filename}` : null; 
-//     const query = "INSERT INTO producto (nombre, nombreComercial, seleccion, precioVenta, proveedor, precioCompra, fotoProducto) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-//     connection.query(query, [nombre, nombreComercial, seleccion, precioVenta, proveedor, precioCompra, fotoProducto], (err, result) => {
-//         if (err) {
-//             console.error(err);
-//             res.status(500).send("Error, couldn't insert products");
-//         } else {
-//             res.json({ message: "Product created successfully", productId: result.insertId });
-//         }
-//     });
-// }
-
-const fs = require('fs');
-const path = require('path');
-const connection = require("../connectDB/dBconnection");
 
 function createProducto(req, res) {
-    const { nombre, nombreComercial, proveedor, precioVenta, precioCompra, fotoProducto } = req.body;
+    const { nombre, nombre_comercial, precio_venta, proveedor_id, precio_compra } = req.body; 
+    const fotoProducto = req.file ? `../uploads/${req.file.filename}` : null; 
 
-    if (!fotoProducto) {
-        return res.status(400).send("No image provided");
+    // Validar que los campos no sean nulos
+    if (!nombre || !nombre_comercial || !precioVenta || !proveedor_id || !precioCompra) {
+        return res.status(400).send("All fields are required.");
     }
 
-    // Si la imagen está en base64, debes quitar la cabecera
-    const base64Data = fotoProducto.replace(/^data:image\/\w+;base64,/, "");
-    const filePath = path.join(__dirname, '../uploads', `${Date.now()}_product.jpg`);
-
-    fs.writeFile(filePath, base64Data, 'base64', (err) => {
+    const query = "INSERT INTO producto (nombre, nombre_comercial, precio_venta, proveedor_id, precio_compra, fotoProducto) VALUES (?, ?, ?, ?, ?, ?)";
+    
+    connection.query(query, [nombre, nombre_comercial, precio_venta, proveedor_id, precio_compra, fotoProducto], (err, result) => {
         if (err) {
             console.error(err);
-            return res.status(500).send("Error, couldn't save the image");
+            return res.status(500).send("Error, couldn't insert product");
         }
-
-        const query = "INSERT INTO producto (nombre, nombreComercial, proveedor, precioVenta, precioCompra, fotoProducto) VALUES (?, ?, ?, ?, ?, ?)";
-        
-        connection.query(query, [nombre, nombreComercial, proveedor, precioVenta, precioCompra, filePath], (err, result) => {
-            if (err) {
-                console.error(err);
-                res.status(500).send("Error, couldn't insert product");
-            } else {
-                res.json({ message: "Product created successfully", productId: result.insertId });
-            }
-        });
+        res.json({ message: "Product created successfully", productId: result.insertId });
     });
 }
-
-
 
 function updateProducto(req, res) {
     const productoId = req.params.id;
-    const { nombre, nombreComercial, seleccion, precioVenta, proveedor, precioCompra, fotoProducto } = req.body;
-    const query = "UPDATE producto SET nombre=?, nombreComercial=?, seleccion=?, precioVenta=?, proveedor=?, precioCompra=?, fotoProducto=? WHERE id=?";
+    const { nombre, nombre_comercial, precio_venta, proveedor_id, precio_compra, fotoProducto } = req.body;
 
-    connection.query(query, [nombre, nombreComercial, seleccion, precioVenta, proveedor, precioCompra, fotoProducto, productoId], (err, result) => {
+    const query = "UPDATE producto SET nombre=?, nombre_comercial=?, precio_venta=?, proveedor_id=?, precio_compra=?, fotoProducto=? WHERE id=?";
+    
+    connection.query(query, [nombre, nombre_comercial, precio_venta, proveedor_id, precio_compra, fotoProducto, productoId], (err, result) => {
         if (err) {
             console.error(err);
-            res.status(500).send("Error, couldn't update products");
-        } else {
-            res.json({ message: "Product updated successfully" });
+            return res.status(500).send("Error, couldn't update product");
         }
+        res.json({ message: "Product updated successfully" });
     });
 }
 
@@ -87,10 +54,9 @@ function getProductoById(req, res) {
     connection.query(query, [productoId], (err, result) => {
         if (err) {
             console.error(err);
-            res.status(500).send("Error retrieving product from database"); 
-        } else {
-            res.json(result);
+            return res.status(500).send("Error retrieving product from database"); 
         }
+        res.json(result);
     });
 }
 
@@ -101,10 +67,9 @@ function deleteProducto(req, res) {
     connection.query(query, [productoId], (err, result) => {
         if (err) {
             console.error(err);
-            res.status(500).send("Error deleting products from database"); 
-        } else {
-            res.json({ message: "Product deleted successfully" });
+            return res.status(500).send("Error deleting product from database"); 
         }
+        res.json({ message: "Product deleted successfully" });
     });
 }
 

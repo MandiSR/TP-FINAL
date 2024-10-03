@@ -16,7 +16,7 @@ function CatalogoProducto() {
   // Función para obtener productos
   const fetchProductos = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/el-producto`);
+      const response = await axios.get(`${API_BASE_URL}/producto/el-producto`);
       setCatalogoList(response.data);
     } catch (error) {
       console.error('Error fetching productos:', error);

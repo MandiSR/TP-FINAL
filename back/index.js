@@ -20,9 +20,6 @@ const pedidoroutes = require('./routes/pedidoRoute');
 
 
 // const PORT = process.env.PORT || 3000;
-
-app.use('/usuario', require('./routes/usuarioRoute'))
-app.use('/auth', require('./routes/authRoute'))
 app.use('/api/proveedor',proveedorroutes)
 app.use('/api/cliente',clienteroutes)
 app.use('/api/producto',productoroutes)
