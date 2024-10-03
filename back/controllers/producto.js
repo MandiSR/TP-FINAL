@@ -1,5 +1,9 @@
 const connection = require("../connectDB/dBconnection");
 
+const fs = require('fs');
+const path = require('path');
+
+
 function getAllProductos(req, res) {
     const query = "SELECT * FROM producto";
 
@@ -8,18 +12,31 @@ function getAllProductos(req, res) {
             console.error(err);
             return res.status(500).send("Error retrieving products from database");
         }
-        res.json(result); // Enviar el resultado si no hay error
+        res.json(result); 
     });
 }
 
 function createProducto(req, res) {
     const { nombre, nombre_comercial, precio_venta, proveedor_id, precio_compra } = req.body; 
-    const fotoProducto = req.file ? `../uploads/${req.file.filename}` : null; 
+   // const fotoProducto = req.file ? `../uploads/${req.file.filename}` : null; 
 
     // Validar que los campos no sean nulos
     if (!nombre || !nombre_comercial || !precioVenta || !proveedor_id || !precioCompra) {
         return res.status(400).send("All fields are required.");
     }
+
+
+    
+    // Procesar la imagen base64
+    let imagePath = null;
+    if (fotoProducto) {
+        const base64Data = fotoProducto.replace(/^data:image\/\w+;base64,/, "");
+        const filePath = path.join(__dirname, '../uploads', `${Date.now()}_product.jpg`);
+        fs.writeFileSync(filePath, base64Data, 'base64');
+        imagePath = `uploads/${path.basename(filePath)}`;
+    }
+
+
 
     const query = "INSERT INTO producto (nombre, nombre_comercial, precio_venta, proveedor_id, precio_compra, fotoProducto) VALUES (?, ?, ?, ?, ?, ?)";
     

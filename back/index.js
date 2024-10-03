@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 
+//const bodyParser = require('body-parser');
+
 require('dotenv').config()
 
 app.use(express.json());
@@ -19,11 +21,20 @@ const productoroutes = require('./routes/productoRoute');
 const pedidoroutes = require('./routes/pedidoRoute');
 
 
-// const PORT = process.env.PORT || 3000;
+//Rutas
 app.use('/api/proveedor',proveedorroutes)
 app.use('/api/cliente',clienteroutes)
 app.use('/api/producto',productoroutes)
 app.use('/api/pedido',pedidoroutes)
+
+
+
+// // Middleware para procesar JSON y datos de formularios
+//app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded({ extended: true }));
+
+// // Middleware para servir archivos estáticos (imágenes en este caso)
+//app.use(express.static('uploads')); // Permite acceder a las imágenes en la carpeta uploads
 
 
 
